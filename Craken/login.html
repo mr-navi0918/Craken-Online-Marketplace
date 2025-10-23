@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Craken</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* --- Global Resets and Theme --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #f0f0f0; line-height: 1.6; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 { color: #ffffff; line-height: 1.2; margin-bottom: 10px; }
+        a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+        img { max-width: 100%; display: block; }
+        ul { list-style: none; }
+        
+        /* --- Button Styles --- */
+        .btn { display: inline-block; padding: 12px 24px; border-radius: 5px; font-weight: bold; font-size: 1rem; text-align: center; transition: all 0.3s ease; }
+        .btn-primary { background-color: #ffffff; color: #000000; border: 1px solid #ffffff; }
+        .btn-primary:hover { background-color: #cccccc; border-color: #cccccc; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; }
+        .btn-secondary:hover { background-color: #ffffff; color: #000000; }
+        
+        /* --- Header & Navigation --- */
+        header { background-color: #000000; padding: 1.5rem 0; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2.5rem; font-weight: 800; color: #ffffff; flex-shrink: 0; }
+        .main-nav ul { display: flex; }
+        
+        /* --- NEW: Header Icons & User Menu --- */
+        .header-actions, .mobile-header-icons { display: flex; align-items: center; gap: 20px; }
+        .icon-btn { position: relative; font-size: 1.4rem; color: #ffffff; background: none; border: none; cursor: pointer; }
+        .icon-btn:hover { color: #cccccc; }
+        
+        /* Cart Badge */
+        .cart-badge {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* User Dropdown */
+        .dropdown { position: relative; }
+        .user-menu-dropdown {
+            display: none; /* Hidden by default */
+            position: absolute;
+            right: 0;
+            top: 150%;
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 101;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.2s ease-out;
+        }
+        .user-menu-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .user-menu-dropdown a {
+            display: block;
+            padding: 12px 16px;
+            color: #f0f0f0;
+            font-weight: 500;
+        }
+        .user-menu-dropdown a:hover { background-color: #222; }
+        .user-menu-dropdown a:first-child { border-radius: 8px 8px 0 0; }
+        .user-menu-dropdown a:last-child { border-radius: 0 0 8px 8px; }
+
+        /* --- Desktop Mega-Menu --- */
+        .main-nav li.dropdown { position: relative; display: inline-block; }
+        .main-nav .nav-link { font-weight: 600; padding: 20px 20px; display: block; color: #f0f0f0; }
+        .main-nav .nav-link:hover { color: #ffffff; }
+        .main-nav .nav-link .fa-caret-down { margin-left: 5px; font-size: 0.9em; transition: transform 0.2s ease; }
+        .dropdown:hover .nav-link .fa-caret-down { transform: rotate(180deg); }
+        .mega-menu { display: none; position: absolute; left: 0; top: 100%; background-color: #000000; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08); z-index: 101; border-radius: 0 0 8px 8px; border-top: 1px solid #333; padding: 2rem; width: auto; min-width: 600px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease-out; }
+        .dropdown:hover .mega-menu { display: flex; opacity: 1; visibility: visible; transform: translateY(0); }
+        .mega-menu-column { flex: 1; padding: 0 1.5rem; min-width: 150px; }
+        .mega-menu-column h4 { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+        .mega-menu-column a { display: block; color: #f0f0f0; padding: 0.5rem 0; font-weight: 500; }
+        .mega-menu-column a:hover { color: #ffffff; padding-left: 5px; }
+        .mega-menu.menu-home { min-width: 800px; }
+        .mega-menu.menu-fashion { min-width: 650px; }
+        .mega-menu.menu-grocery { min-width: 500px; }
+
+        /* --- Mobile Navigation --- */
+        .mobile-nav-toggle { display: none; font-size: 1.8rem; color: #ffffff; background: none; border: none; cursor: pointer; }
+        .mobile-header-icons { display: none; } /* Hidden on desktop */
+        .mobile-nav { display: none; width: 100%; background-color: #000; border-top: 1px solid #333; position: absolute; top: 100%; left: 0; z-index: 99; }
+        .mobile-nav.mobile-nav-open { display: block; }
+        .mobile-nav-section { padding: 1rem 5%; border-bottom: 1px solid #333; }
+        .mobile-nav-section:last-child { border-bottom: none; }
+        .mobile-nav a, .mobile-nav summary { display: block; color: #f0f0f0; padding: 12px 0; font-weight: 600; font-size: 1.1rem; }
+        .mobile-nav a:hover, .mobile-nav summary:hover { color: #ffffff; }
+        .mobile-nav details { width: 100%; }
+        .mobile-nav summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .mobile-nav summary::after { content: '\f067'; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+        .mobile-nav details[open] summary::after { content: '\f068'; }
+        .mobile-nav .submenu { padding-left: 1.5rem; }
+        .mobile-nav .submenu a { font-size: 1rem; font-weight: 400; padding: 8px 0; color: #ccc; }
+        .mobile-nav .submenu a:hover { color: #fff; }
+
+        /* --- Media Query for Responsiveness --- */
+        @media (max-width: 991px) {
+            .main-nav { display: none; }
+            .header-actions { display: none; }
+            .mobile-nav-toggle { display: block; order: 3; } /* Hamburger last */
+            .mobile-header-icons { display: flex; order: 2; } /* Icons in middle */
+            .logo { order: 1; } /* Logo first */
+        }
+        
+        /* --- NEW: Form Page Styles --- */
+        .form-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 0;
+            min-height: 70vh;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 2.5rem;
+        }
+        .form-container h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ccc;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: #ffffff;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ffffff;
+        }
+        .form-container .btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #aaa;
+        }
+        .form-footer a {
+            color: #fff;
+            font-weight: 600;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* --- Footer --- */
+        footer { background-color: #000000; color: #888; padding: 3rem 0; text-align: center; margin-top: 4rem; }
+        .footer-links { margin-bottom: 1.5rem; }
+        .footer-links a { color: #aaa; margin: 0 15px; font-weight: 500; }
+        .footer-links a:hover { color: #ffffff; }
+        .copyright { font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <button class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+            
+            <a href="craken.html" class="logo">Craken</a>
+            
+            <nav class="main-nav">
+                <ul>
+                    </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="dropdown" id="user-menu-desktop">
+                    <button class="icon-btn" id="user-menu-btn-desktop" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="#" class="icon-btn" id="cart-btn-desktop" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-desktop">0</span>
+                </a>
+            </div>
+            
+            <div class="mobile-header-icons">
+                 <div class="dropdown" id="user-menu-mobile">
+                    <button class="icon-btn" id="user-menu-btn-mobile" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="#" class="icon-btn" id="cart-btn-mobile" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-mobile">0</span>
+                </a>
+            </div>
+        </div>
+        
+        <nav class="mobile-nav" id="mobile-nav">
+            </nav>
+    </header>
+
+    <main class="form-page">
+        <div class="form-container">
+            <h2>Login to Craken</h2>
+            <form action="#">
+                <div class="form-group">
+                    <label for="email">Email, Phone, or NIC</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <div class="form-footer">
+                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About Us</a> <a href="#">Contact</a> <a href="#">Help & FAQ</a>
+                <a href="#">Terms of Service</a> <a href="#">Privacy Policy</a>
+            </div>
+            <p class="copyright">&copy; 2025 Craken. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // --- Global JS for all pages ---
+        
+        // Cart Badge Logic
+        function updateCartBadges() {
+            const cartCount = localStorage.getItem('cartCount') || '0';
+            const badges = document.querySelectorAll('.cart-badge');
+            
+            badges.forEach(badge => {
+                if (cartCount !== '0') {
+                    badge.innerText = cartCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+        
+        // User Menu Toggle Logic
+        function setupUserMenu(btnId) {
+            const userMenuBtn = document.getElementById(btnId);
+            const userMenu = userMenuBtn.nextElementSibling;
+
+            userMenuBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent click from bubbling up
+                userMenu.classList.toggle('show');
+            });
+        }
+        
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadges();
+            
+            // Setup desktop and mobile user menus
+            setupUserMenu('user-menu-btn-desktop');
+            setupUserMenu('user-menu-btn-mobile');
+
+            // Toggle mobile nav
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                document.getElementById('mobile-nav').classList.toggle('mobile-nav-open');
+            });
+
+            // Cart icon alerts
+            document.getElementById('cart-btn-desktop').addEventListener('click', function(e) { e.preventDefault(); alert('Opening cart... (This is a demo)'); });
+            document.getElementById('cart-btn-mobile').addEventListener('click', function(e) { e.preventDefault(); alert('Opening cart... (This is a demo)'); });
+        });
+        
+        // Close dropdown when clicking anywhere else
+        window.addEventListener('click', function() {
+            document.querySelectorAll('.user-menu-dropdown.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        });
+
+    </script>
+</body>
+</html>
