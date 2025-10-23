@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Craken</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* (All the same CSS) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #f0f0f0; line-height: 1.6; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 { color: #ffffff; line-height: 1.2; margin-bottom: 10px; }
+        a { text-decoration: none; color: #ffffff; }
+        img { max-width: 100%; display: block; }
+        .btn { display: inline-block; padding: 12px 24px; border-radius: 5px; font-weight: bold; font-size: 1rem; text-align: center; transition: all 0.3s ease; }
+        .btn-primary { background-color: #ffffff; color: #000000; border: 1px solid #ffffff; }
+        .btn-primary:hover { background-color: #cccccc; border-color: #cccccc; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; }
+        .btn-secondary:hover { background-color: #ffffff; color: #000000; }
+        header { background-color: #000000; padding: 1.5rem 0; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { font-size: 2.5rem; font-weight: 800; color: #ffffff; }
+        .main-nav ul { list-style: none; display: flex; }
+        .main-nav li { margin-left: 25px; }
+        .main-nav a { font-weight: 600; padding-bottom: 5px; }
+        .main-nav a:hover { color: #cccccc; border-bottom: 2px solid #ffffff; }
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .header-actions .btn { margin-left: 0; padding: 8px 16px; }
+        .header-icon { font-size: 1.4rem; color: #ffffff; transition: color 0.3s ease; }
+        .header-icon:hover { color: #cccccc; }
+        .search-page { padding: 4rem 0; }
+        .search-page h2 { font-size: 2.5rem; margin-bottom: 1rem; text-align: center; }
+        .search-page .sub-heading { text-align: center; font-size: 1.1rem; color: #aaa; margin-bottom: 2.5rem; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .product-card { background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255, 255, 255, 0.05); }
+        .product-card img { width: 100%; height: 250px; object-fit: cover; background-color: #555; border-bottom: 1px solid #333; }
+        .product-info { padding: 1.5rem; }
+        .product-info h3 { font-size: 1.25rem; }
+        .product-info .price { font-size: 1.3rem; font-weight: bold; color: #ffffff; margin: 0.5rem 0 1rem 0; }
+        
+        /* --- No Results Style --- */
+        .no-results-message {
+            text-align: center;
+            padding: 4rem 1rem;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .no-results-message h3 { font-size: 2rem; color: #fff; }
+        .no-results-message p { font-size: 1.1rem; color: #aaa; margin-top: 1rem; }
+        .no-results-message strong { color: #fff; }
+
+        footer { background-color: #000000; color: #888; padding: 3rem 0; text-align: center; margin-top: 4rem; }
+        .footer-links { margin-bottom: 1.5rem; }
+        .footer-links a { color: #aaa; margin: 0 15px; font-weight: 500; }
+        .footer-links a:hover { color: #ffffff; }
+        .copyright { font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="craken.html" class="logo">Craken</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">Electronics</a></li>
+                    <li><a href="#">Fashion</a></li>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Deals</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="#" class="header-icon" id="wishlist-btn" aria-label="Wishlist"><i class="fa-regular fa-heart"></i></a>
+                <a href="#" class="header-icon" id="cart-btn" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+                <a href="#" class="btn btn-secondary">Sell on Craken</a>
+                <a href="#" class="btn btn-primary">Login / Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-page">
+            <div class="container">
+                
+                <h2 id="search-title">Search Results</h2>
+                <p class="sub-heading" id="search-sub-heading"></p>
+
+                <div id="results-found">
+                    <div class="product-grid">
+                        <div class="product-card">
+                            <img src="https://via.placeholder.com/400x300/CCCCCC/000000?text=Product+Image" alt="Product 1">
+                            <div class="product-info">
+                                <h3>Minimalist Wrist Watch</h3>
+                                <p class="price">$129.99</p>
+                                <a href="product-detail.html" class="btn btn-secondary">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <img src="https://via.placeholder.com/400x300/C0C0C0/000000?text=Product+Image" alt="Product 2">
+                            <div class="product-info">
+                                <h3>Smart Watch Pro</h3>
+                                <p class="price">$299.00</p>
+                                <a href="product-detail.html" class="btn btn-secondary">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <img src="https://via.placeholder.com/400x300/D4D4D4/000000?text=Product+Image" alt="Product 3">
+                            <div class="product-info">
+                                <h3>Vintage Pocket Watch</h3>
+                                <p class="price">$180.00</p>
+                                <a href="product-detail.html" class="btn btn-secondary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="no-results" class="no-results-message" style="display: none;">
+                    <h3>Sorry, no results found</h3>
+                    <p>We couldn't find any products matching <strong id="search-query-text">""</strong>.</p>
+                    <p>Please try a different search term.</p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About Us</a> <a href="#">Contact</a> <a href="#">Help & FAQ</a>
+                <a href="#">Terms of Service</a> <a href="#">Privacy Policy</a>
+            </div>
+            <p class="copyright">&copy; 2025 Craken. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Header icon alerts ---
+        document.getElementById('cart-btn').addEventListener('click', function(e) { e.preventDefault(); alert('Opening cart... (This is a demo)'); });
+        document.getElementById('wishlist-btn').addEventListener('click', function(e) { e.preventDefault(); alert('Opening wishlist... (This is a demo)'); });
+
+        // --- Search Results Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('query') || ''; // Get search query
+
+            // Get elements to change
+            const title = document.getElementById('search-title');
+            const subHeading = document.getElementById('search-sub-heading');
+            const resultsFoundDiv = document.getElementById('results-found');
+            const noResultsDiv = document.getElementById('no-results');
+            const searchQueryText = document.getElementById('search-query-text');
+
+            // Set the page title to match the search
+            title.textContent = 'Search Results for "' + query + '"';
+            
+            // This is the logic you wanted:
+            // We check the query (ignoring upper/lower case)
+            if (query.toLowerCase() === 'watch') {
+                // If it IS "watch", show the products
+                subHeading.textContent = 'Showing 3 results';
+                resultsFoundDiv.style.display = 'block';
+                noResultsDiv.style.display = 'none';
+            } else {
+                // If it is ANYTHING ELSE, show the "No Results" message
+                subHeading.textContent = 'Showing 0 results';
+                resultsFoundDiv.style.display = 'none';
+                noResultsDiv.style.display = 'block';
+                searchQueryText.textContent = '"' + query + '"';
+            }
+        });
+    </script>
+
+</body>
+</html>
