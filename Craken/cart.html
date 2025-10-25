@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Craken</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- Global Resets and Theme --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #f0f0f0; line-height: 1.6; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 { color: #ffffff; line-height: 1.2; margin-bottom: 10px; }
+        a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+        img { max-width: 100%; display: block; }
+        ul { list-style: none; }
+
+        /* --- Button Styles --- */
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-size: 0.95rem; text-align: center; transition: all 0.3s ease; cursor: pointer;}
+        .btn-primary { background-color: #ffffff; color: #000000; border: 1px solid #ffffff; }
+        .btn-primary:hover { background-color: #cccccc; border-color: #cccccc; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; }
+        .btn-secondary:hover { background-color: #ffffff; color: #000000; }
+        .btn-large { padding: 14px 28px; font-size: 1.1rem; }
+
+        /* --- Header & Navigation --- */
+        header { background-color: #000000; padding: 1rem 0; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2.2rem; font-weight: 800; color: #ffffff; flex-shrink: 0; margin-right: 0; }
+        .main-nav { margin: 0 auto; flex-grow: 1; display: flex; justify-content: center; }
+        .main-nav ul { display: flex; }
+
+        /* --- Header Icons & User Menu --- */
+        .header-actions { display: flex; align-items: center; gap: 15px; margin-left: 0; flex-shrink: 0; }
+        .mobile-header-icons { display: flex; align-items: center; gap: 15px; }
+        .icon-btn { position: relative; font-size: 1.3rem; color: #ffffff; background: none; border: none; cursor: pointer; padding: 5px; }
+        .icon-btn:hover { color: #cccccc; }
+        .cart-badge { display: none; position: absolute; top: -5px; right: -8px; background-color: #ffffff; color: #000000; border-radius: 50%; width: 18px; height: 18px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .dropdown { position: relative; }
+        .user-menu-dropdown { display: none; position: absolute; right: 0; top: calc(100% + 10px); background-color: #000; border: 1px solid #333; border-radius: 8px; min-width: 160px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 101; opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+        .user-menu-dropdown.show { display: block; opacity: 1; transform: translateY(0); }
+        .user-menu-dropdown a { display: block; padding: 10px 15px; color: #f0f0f0; font-weight: 500; font-size: 0.95rem; }
+        .user-menu-dropdown a:hover { background-color: #222; }
+        .user-menu-dropdown a:first-child { border-radius: 8px 8px 0 0; }
+        .user-menu-dropdown a:last-child { border-radius: 0 0 8px 8px; }
+        .main-nav li.dropdown { position: relative; display: inline-block; }
+        .main-nav .nav-link { font-weight: 600; padding: 15px 18px; display: block; color: #f0f0f0; font-size: 0.95rem; }
+        .main-nav .nav-link:hover { color: #ffffff; }
+        /* Mega menu hidden on cart page */
+        .mega-menu { display: none !important; }
+
+        /* --- Mobile Navigation --- */
+        .mobile-nav-toggle { display: none; font-size: 1.6rem; color: #ffffff; background: none; border: none; cursor: pointer; padding: 5px; }
+        .mobile-header-icons { display: none; }
+        .mobile-nav { display: none; width: 100%; max-height: calc(100vh - 70px); overflow-y: auto; background-color: #000; border-top: 1px solid #333; position: absolute; top: 100%; left: 0; z-index: 99; transition: transform 0.3s ease-out; transform: translateY(-100%); }
+        .mobile-nav.mobile-nav-open { display: block; transform: translateY(0); }
+        .mobile-nav-section { padding: 0.5rem 5%; border-bottom: 1px solid #333; }
+        .mobile-nav-section:last-child { border-bottom: none; }
+        .mobile-nav a, .mobile-nav summary { display: block; color: #f0f0f0; padding: 10px 0; font-weight: 600; font-size: 1rem; }
+        .mobile-nav a:hover, .mobile-nav summary:hover { color: #ffffff; }
+        .mobile-nav details { width: 100%; }
+        .mobile-nav summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .mobile-nav summary::after { content: '\f067'; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.9em; }
+        .mobile-nav details[open] summary::after { content: '\f068'; }
+        .mobile-nav .submenu { padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .mobile-nav .submenu a { font-size: 0.95rem; font-weight: 400; padding: 6px 0; color: #ccc; }
+        .mobile-nav .submenu a:hover { color: #fff; }
+
+        /* --- Media Query --- */
+        @media (max-width: 1050px) {
+             .main-nav { display: none; }
+             .header-actions { display: none; }
+             .mobile-nav-toggle { display: block; order: 1; margin-right: 10px; }
+             .mobile-header-icons { display: flex; order: 3; margin-left: auto; gap: 10px; }
+             .logo { order: 2; margin-right: auto; font-size: 1.8rem; }
+        }
+         @media (max-width: 768px) { /* Tablet adjustments */
+             .cart-item { flex-wrap: wrap; gap: 1rem; }
+             .item-details { flex-basis: calc(100% - 100px); order: 2; }
+             .item-quantity { order: 3; margin-right: auto; margin-left: 95px; margin-top: 5px; }
+             .item-remove { order: 4; margin-left: auto; align-self: flex-end; }
+             .cart-item img { order: 1; width: 80px; height: 80px; }
+             .footer-container { grid-template-columns: repeat(2, 1fr); }
+             .footer-payment-social { flex-direction: column; gap: 1.5rem; }
+        }
+         @media (max-width: 480px) {
+            .logo { font-size: 1.6rem; }
+            .icon-btn { font-size: 1.2rem; }
+            .cart-badge { width: 16px; height: 16px; font-size: 0.7rem; top: -4px; right: -6px;}
+            .footer-container { grid-template-columns: 1fr; }
+        }
+
+        /* --- Cart Page Styles --- */
+        .cart-page { padding: 3rem 0; }
+        .cart-page h2 { font-size: 2.2rem; text-align: center; margin-bottom: 2rem; }
+        .cart-items { border-top: 1px solid #333; }
+        .cart-item { display: flex; align-items: flex-start; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid #333; }
+        .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; background-color: #555; flex-shrink: 0; }
+        .item-details { flex-grow: 1; }
+        .item-details h3 { font-size: 1.1rem; margin-bottom: 3px; }
+        .item-price { font-size: 1rem; font-weight: bold; color: #ccc; }
+        .item-quantity label { font-size: 0.8rem; display: block; margin-bottom: 3px; color: #aaa;}
+        .item-quantity input { width: 60px; padding: 6px 8px; background-color: #333; border: 1px solid #555; color: #fff; border-radius: 5px; text-align: center; font-size: 0.9rem; }
+        .item-remove button { background: none; border: none; color: #888; font-size: 1.1rem; cursor: pointer; padding: 5px; margin-left: 10px; }
+        .item-remove button:hover { color: #fff; }
+        .cart-summary { margin-top: 2rem; background-color: #1a1a1a; padding: 1.5rem; border-radius: 8px; border: 1px solid #333; text-align: right; }
+        .cart-summary h3 { font-size: 1.3rem; margin-bottom: 0.8rem; text-align: left; }
+        .cart-summary p { font-size: 1.1rem; margin-bottom: 1rem; color: #ccc; display: flex; justify-content: space-between;}
+        .cart-summary .total-price { font-weight: bold; color: #fff; }
+        .cart-summary .btn { margin-top: 1rem; width: 100%; }
+        .empty-cart { text-align: center; padding: 4rem 1rem; color: #aaa; border-top: 1px solid #333; }
+        .empty-cart i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+        /* --- Footer --- */
+        footer { background-color: #0a0a0a; color: #888; padding: 3rem 0 2rem 0; text-align: center; margin-top: 4rem; border-top: 1px solid #222; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; text-align: left;}
+        .footer-column h4 { color: #ffffff; font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-column ul li { margin-bottom: 0.6rem; }
+        .footer-column ul li a { color: #aaa; font-size: 0.9rem; transition: color 0.2s ease; }
+        .footer-column ul li a:hover { color: #ffffff; }
+        .footer-signup { margin-top: 10px; }
+        .footer-signup p { font-size: 0.9rem; color: #aaa; margin-bottom: 0.8rem; }
+        .signup-form { display: flex; }
+        .signup-form input[type="email"] { flex-grow: 1; padding: 10px 12px; border: 1px solid #333; background-color: #1f1f1f; color: #fff; border-radius: 5px 0 0 5px; font-size: 0.9rem; }
+        .signup-form input[type="email"]:focus { outline: none; border-color: #555; }
+        .signup-form button { padding: 10px 15px; background-color: #ffffff; color: #000000; border: 1px solid #ffffff; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background-color 0.2s ease; }
+        .signup-form button:hover { background-color: #cccccc; border-color: #cccccc; }
+        .footer-bottom { border-top: 1px solid #222; padding-top: 1.5rem; text-align: center; }
+        .footer-bottom .container { display: flex; flex-direction: column; align-items: center; gap: 1rem;}
+        .footer-payment-social { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem; }
+        .footer-payment-icons { display: flex; gap: 10px; font-size: 1.8rem; color: #555; }
+        .footer-social-icons { display: flex; gap: 15px; font-size: 1.3rem; }
+        .footer-social-icons a { color: #888; transition: color 0.2s ease; }
+        .footer-social-icons a:hover { color: #ffffff; }
+        .footer-brand-info { margin-top: 1rem; font-style: italic; color: #aaa; font-size: 0.9rem;}
+        .copyright { font-size: 0.85rem; color: #666; margin-top: 1rem;}
+        .footer-links-bottom { margin-top: 1rem; }
+        .footer-links-bottom a { color: #aaa; margin: 0 8px; font-weight: 500; font-size: 0.85rem; }
+        .footer-links-bottom a:hover { color: #ffffff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <button class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+            <a href="craken.html" class="logo">Craken</a>
+
+            <nav class="main-nav">
+                 <ul>
+                    <li><a href="category.html?name=Home+%26+Garden" class="nav-link">Home & Garden</a></li>
+                    <li><a href="category.html?name=Fashion" class="nav-link">Fashion</a></li>
+                    <li><a href="category.html?name=Health+%26+Beauty" class="nav-link">Health & Beauty</a></li>
+                    <li><a href="category.html?name=Grocery" class="nav-link">Grocery</a></li>
+                 </ul>
+            </nav>
+
+            <div class="header-actions">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                <div class="dropdown" id="user-menu-desktop">
+                    <button class="icon-btn" id="user-menu-btn-desktop" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-desktop" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-desktop">0</span>
+                </a>
+            </div>
+
+            <div class="mobile-header-icons">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                 <div class="dropdown" id="user-menu-mobile">
+                    <button class="icon-btn" id="user-menu-btn-mobile" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-mobile" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-mobile">0</span>
+                </a>
+            </div>
+        </div>
+
+        <nav class="mobile-nav" id="mobile-nav">
+             <div class="mobile-nav-section"> <ul> /* Categories */ </ul> </div>
+             <div class="mobile-nav-section"> <ul> /* Actions */ </ul> </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="cart-page">
+            <div class="container">
+                <h2>Your Shopping Cart</h2>
+
+                <div class="cart-items" id="cart-items-container">
+                    <div class="empty-cart" id="empty-cart-message" style="display: none;">
+                         <i class="fa-solid fa-cart-arrow-down"></i>
+                         <p>Your cart is currently empty.</p>
+                         <a href="craken.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                </div>
+
+                <div class="cart-summary" id="cart-summary-container" style="display: none;">
+                    <h3>Order Summary</h3>
+                    <p>Subtotal: <span class="total-price" id="subtotal-price">Rs 0.00</span></p>
+                    <button class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-column"> <h4>Menu</h4> <ul><li><a href="craken.html">Home</a></li><li><a href="all-products.html">Shop All</a></li><li><a href="craken-originals.html">Craken Originals</a></li><li><a href="category.html?name=Deals">Deals</a></li></ul> </div>
+            <div class="footer-column"> <h4>Support</h4> <ul><li><a href="#">FAQ</a></li><li><a href="#">Delivery</a></li><li><a href="#">Make A Return</a></li><li><a href="#">Orders</a></li><li><a href="#">Returns</a></li><li><a href="#">Submit A Request</a></li><li><a href="#">Careers</a></li></ul> </div>
+            <div class="footer-column"> <h4>My Account</h4> <ul><li><a href="login.html">Login</a></li><li><a href="signup.html">Register</a></li></ul> </div>
+            <div class="footer-column"> <h4>Stay Connected</h4> <div class="footer-signup"> <p>Be the first to know about new drops & offers.</p> <form action="#" class="signup-form"> <input type="email" placeholder="Enter your email address" required> <button type="submit">SIGN UP</button> </form> </div> </div>
+        </div>
+        <div class="footer-bottom">
+             <div class="container">
+                <div class="footer-payment-social">
+                    <div class="footer-payment-icons"> <i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i> </div>
+                    <div class="footer-social-icons"> <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a> <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a> <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a> </div>
+                </div>
+                <div class="footer-links-bottom"> <a href="#">Contact Information</a> <a href="#">Refund Policy</a> <a href="#">Shipping Policy</a> <a href="#">Terms of Service</a> </div>
+                 <p class="footer-brand-info">Craken - A Sri Lankan Brand</p>
+                 <p class="copyright">&copy; 2025 Craken. All Rights Reserved.</p>
+             </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- Global JS ---
+        function updateCartBadges() {
+             let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+             let totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+             localStorage.setItem('cartCount', totalQuantity.toString()); // Keep total count sync
+             const cartCount = totalQuantity.toString();
+             const badges = document.querySelectorAll('.cart-badge');
+             badges.forEach(badge => {
+                 if (cartCount !== '0' && parseInt(cartCount) > 0) {
+                     badge.innerText = cartCount;
+                     badge.style.display = 'flex';
+                 } else {
+                     badge.style.display = 'none';
+                 }
+             });
+        }
+        function setupUserMenu(btnId) {
+            const userMenuBtn = document.getElementById(btnId);
+            const userMenu = userMenuBtn?.nextElementSibling;
+            if (!userMenuBtn || !userMenu) return;
+            userMenuBtn.addEventListener('click', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                document.querySelectorAll('.user-menu-dropdown.show').forEach(m => {
+                    if (m !== userMenu) m.classList.remove('show');
+                });
+                userMenu.classList.toggle('show');
+            });
+        }
+
+        // --- Cart Page Specific Functions ---
+        function displayCartItems() {
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const cartSummaryContainer = document.getElementById('cart-summary-container');
+            let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+
+            // Clear previous items except the empty message structure
+            cartItemsContainer.innerHTML = `
+                <div class="empty-cart" id="empty-cart-message" style="display: none;">
+                     <i class="fa-solid fa-cart-arrow-down"></i>
+                     <p>Your cart is currently empty.</p>
+                     <a href="craken.html" class="btn btn-primary">Start Shopping</a>
+                </div>`;
+             const emptyCartMessageRefreshed = document.getElementById('empty-cart-message'); // Get reference again
+
+            if (cartItems.length === 0) {
+                if(emptyCartMessageRefreshed) emptyCartMessageRefreshed.style.display = 'block';
+                if(cartSummaryContainer) cartSummaryContainer.style.display = 'none';
+            } else {
+                if(emptyCartMessageRefreshed) emptyCartMessageRefreshed.style.display = 'none';
+                if(cartSummaryContainer) cartSummaryContainer.style.display = 'block';
+
+                cartItems.forEach(item => {
+                    const itemHTML = `
+                        <div class="cart-item" data-product-id="${item.id}">
+                            <img src="${item.image || 'https://via.placeholder.com/80x80/333333/555555?text=N/A'}" alt="${item.name}">
+                            <div class="item-details">
+                                <h3>${item.name}</h3>
+                                <p class="item-price">Rs ${item.price.toFixed(2)}</p>
+                            </div>
+                            <div class="item-quantity">
+                                <label for="qty-${item.id}" class="sr-only">Quantity for ${item.name}</label> <input type="number" id="qty-${item.id}" value="${item.quantity}" min="1" data-price="${item.price}" onchange="updateItemQuantity('${item.id}', this.value)">
+                            </div>
+                            <div class="item-remove">
+                                <button aria-label="Remove ${item.name}" onclick="removeItem('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    if (emptyCartMessageRefreshed) {
+                         emptyCartMessageRefreshed.insertAdjacentHTML('beforebegin', itemHTML);
+                    } else {
+                         cartItemsContainer.innerHTML += itemHTML; // Fallback
+                    }
+                });
+                updateCartTotal();
+            }
+        }
+
+        function updateCartTotal() {
+            let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+            let subtotal = 0;
+            let totalItems = 0;
+
+            cartItems.forEach(item => {
+                totalItems += item.quantity;
+                subtotal += item.quantity * item.price;
+            });
+
+            // Update localStorage count
+            localStorage.setItem('cartCount', totalItems.toString());
+            updateCartBadges(); // Update header badges
+
+            const subtotalPriceEl = document.getElementById('subtotal-price');
+            // const totalItemsEl = document.getElementById('total-items'); // Removed this element
+
+            // if(totalItemsEl) totalItemsEl.innerText = totalItems; // Removed this line
+            if(subtotalPriceEl) subtotalPriceEl.innerText = `Rs ${subtotal.toFixed(2)}`;
+
+            // Show/Hide summary based on items
+            const cartSummaryContainer = document.getElementById('cart-summary-container');
+            const emptyCartMessage = document.getElementById('empty-cart-message'); // Get fresh reference
+            if (totalItems === 0) {
+                 if(emptyCartMessage) emptyCartMessage.style.display = 'block';
+                 if(cartSummaryContainer) cartSummaryContainer.style.display = 'none';
+            } else {
+                 if(emptyCartMessage) emptyCartMessage.style.display = 'none';
+                 if(cartSummaryContainer) cartSummaryContainer.style.display = 'block';
+            }
+        }
+
+        function updateItemQuantity(productId, newQuantity) {
+            let quantity = parseInt(newQuantity);
+            if (isNaN(quantity) || quantity < 1) {
+                quantity = 1;
+                const inputField = document.getElementById(`qty-${productId}`);
+                if (inputField) inputField.value = '1';
+            }
+
+            let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+            const itemIndex = cartItems.findIndex(item => item.id === productId);
+
+            if (itemIndex > -1) {
+                cartItems[itemIndex].quantity = quantity;
+                localStorage.setItem('crakenCart', JSON.stringify(cartItems));
+                updateCartTotal();
+            }
+        }
+
+        function removeItem(productId) {
+            let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+            cartItems = cartItems.filter(item => item.id !== productId);
+            localStorage.setItem('crakenCart', JSON.stringify(cartItems));
+
+            // Visually remove the item and update totals
+            const itemElement = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            if (itemElement) {
+                itemElement.remove();
+            }
+            updateCartTotal(); // Recalculate totals and update badges
+            // alert('Item removed'); // Optional feedback
+        }
+
+        // --- Run on Load ---
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadges(); // Initial badge update
+            setupUserMenu('user-menu-btn-desktop');
+            setupUserMenu('user-menu-btn-mobile');
+
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+             if (mobileMenuBtn && mobileNav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileNav.classList.toggle('mobile-nav-open');
+                });
+            }
+
+             const wishlistBtnMobile = document.getElementById('wishlist-btn-mobile');
+             if (wishlistBtnMobile) {
+                wishlistBtnMobile.addEventListener('click', function(e) {
+                    e.preventDefault(); alert('Opening wishlist... (This is a demo)');
+                });
+             }
+
+            displayCartItems(); // Load and display items from localStorage
+
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', function() {
+                    alert('Proceeding to checkout... (Demo)');
+                });
+            }
+        });
+
+        // Close dropdown when clicking anywhere else
+        window.addEventListener('click', function(e) {
+             if (!e.target.closest('.dropdown')) {
+                 document.querySelectorAll('.user-menu-dropdown.show').forEach(menu => {
+                     menu.classList.remove('show');
+                 });
+             }
+        });
+
+        // Add SR only class for accessibility
+        const style = document.createElement('style');
+        style.innerHTML = `.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }`;
+        document.head.appendChild(style);
+
+    </script>
+</body>
+</html>

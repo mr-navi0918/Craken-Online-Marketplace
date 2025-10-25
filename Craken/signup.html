@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Craken</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- Global Resets and Theme --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #f0f0f0; line-height: 1.6; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 { color: #ffffff; line-height: 1.2; margin-bottom: 10px; }
+        a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+        img { max-width: 100%; display: block; }
+        ul { list-style: none; }
+
+        /* --- Button Styles --- */
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-size: 0.95rem; text-align: center; transition: all 0.3s ease; cursor: pointer; }
+        .btn-primary { background-color: #ffffff; color: #000000; border: 1px solid #ffffff; }
+        .btn-primary:hover { background-color: #cccccc; border-color: #cccccc; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; }
+        .btn-secondary:hover { background-color: #ffffff; color: #000000; }
+
+        /* --- Header & Navigation (Simplified for Login/Signup) --- */
+        header { background-color: #000000; padding: 1rem 0; border-bottom: 1px solid #333; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2.2rem; font-weight: 800; color: #ffffff; flex-shrink: 0; margin-right: 0; }
+        .header-actions, .mobile-header-icons { display: flex; align-items: center; gap: 15px; margin-left: 0; flex-shrink: 0;}
+        .icon-btn { position: relative; font-size: 1.3rem; color: #ffffff; background: none; border: none; cursor: pointer; padding: 5px; }
+        .icon-btn:hover { color: #cccccc; }
+        .cart-badge { display: none; position: absolute; top: -5px; right: -8px; background-color: #ffffff; color: #000000; border-radius: 50%; width: 18px; height: 18px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .dropdown { position: relative; }
+        .user-menu-dropdown { display: none; position: absolute; right: 0; top: calc(100% + 10px); background-color: #000; border: 1px solid #333; border-radius: 8px; min-width: 160px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 101; opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+        .user-menu-dropdown.show { display: block; opacity: 1; transform: translateY(0); }
+        .user-menu-dropdown a { display: block; padding: 10px 15px; color: #f0f0f0; font-weight: 500; font-size: 0.95rem; }
+        .user-menu-dropdown a:hover { background-color: #222; }
+        .user-menu-dropdown a:first-child { border-radius: 8px 8px 0 0; }
+        .user-menu-dropdown a:last-child { border-radius: 0 0 8px 8px; }
+        .main-nav, .mobile-nav-toggle, .mobile-nav { display: none; } /* Hide main nav elements */
+         @media (max-width: 1050px) { /* Adjust breakpoint to match others */
+             .header-actions { display: none; }
+             .mobile-header-icons { display: flex; order: 3; margin-left: auto; gap: 10px;}
+             .logo { order: 2; margin-right: auto; font-size: 1.8rem;}
+         }
+         @media (max-width: 480px) {
+            .logo { font-size: 1.6rem; }
+            .icon-btn { font-size: 1.2rem; }
+            .cart-badge { width: 16px; height: 16px; font-size: 0.7rem; top: -4px; right: -6px;}
+        }
+
+        /* --- Form Page Styles --- */
+        .form-page { display: flex; justify-content: center; align-items: center; padding: 4rem 0; min-height: calc(100vh - 200px); }
+        .form-container { width: 100%; max-width: 400px; background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 2.5rem; }
+        .form-container h2 { text-align: center; font-size: 1.8rem; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #ccc; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 12px; font-size: 1rem; background-color: #333; border: 1px solid #555; border-radius: 5px; color: #ffffff; }
+        .form-group input:focus { outline: none; border-color: #ffffff; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3); }
+        .form-container .btn { width: 100%; margin-top: 1.5rem; padding: 14px; }
+        .form-footer { text-align: center; margin-top: 1.5rem; color: #aaa; font-size: 0.9rem; }
+        .form-footer a { color: #fff; font-weight: 600; }
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* --- Footer --- */
+        footer { background-color: #0a0a0a; color: #888; padding: 3rem 0 2rem 0; text-align: center; margin-top: 4rem; border-top: 1px solid #222; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; text-align: left;}
+        .footer-column h4 { color: #ffffff; font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-column ul li { margin-bottom: 0.6rem; }
+        .footer-column ul li a { color: #aaa; font-size: 0.9rem; transition: color 0.2s ease; }
+        .footer-column ul li a:hover { color: #ffffff; }
+        .footer-signup { margin-top: 10px; }
+        .footer-signup p { font-size: 0.9rem; color: #aaa; margin-bottom: 0.8rem; }
+        .signup-form { display: flex; }
+        .signup-form input[type="email"] { flex-grow: 1; padding: 10px 12px; border: 1px solid #333; background-color: #1f1f1f; color: #fff; border-radius: 5px 0 0 5px; font-size: 0.9rem; }
+        .signup-form input[type="email"]:focus { outline: none; border-color: #555; }
+        .signup-form button { padding: 10px 15px; background-color: #ffffff; color: #000000; border: 1px solid #ffffff; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background-color 0.2s ease; }
+        .signup-form button:hover { background-color: #cccccc; border-color: #cccccc; }
+        .footer-bottom { border-top: 1px solid #222; padding-top: 1.5rem; text-align: center; }
+        .footer-bottom .container { display: flex; flex-direction: column; align-items: center; gap: 1rem;}
+        .footer-payment-social { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem; }
+        .footer-payment-icons { display: flex; gap: 10px; font-size: 1.8rem; color: #555; }
+        .footer-social-icons { display: flex; gap: 15px; font-size: 1.3rem; }
+        .footer-social-icons a { color: #888; transition: color 0.2s ease; }
+        .footer-social-icons a:hover { color: #ffffff; }
+        .footer-brand-info { margin-top: 1rem; font-style: italic; color: #aaa; font-size: 0.9rem;}
+        .copyright { font-size: 0.85rem; color: #666; margin-top: 1rem;}
+        .footer-links-bottom { margin-top: 1rem; }
+        .footer-links-bottom a { color: #aaa; margin: 0 8px; font-weight: 500; font-size: 0.85rem; }
+        .footer-links-bottom a:hover { color: #ffffff; }
+
+        @media (max-width: 768px) {
+            .footer-container { grid-template-columns: repeat(2, 1fr); }
+            .footer-payment-social { flex-direction: column; gap: 1.5rem; }
+        }
+         @media (max-width: 480px) {
+            .footer-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+             <button class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menu" style="display: none;"><i class="fa-solid fa-bars"></i></button>
+
+            <a href="craken.html" class="logo">Craken</a>
+
+             <nav class="main-nav" style="display: none;"><ul></ul></nav>
+
+            <div class="header-actions">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                <div class="dropdown" id="user-menu-desktop">
+                    <button class="icon-btn" id="user-menu-btn-desktop" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-desktop" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-desktop">0</span>
+                </a>
+            </div>
+
+            <div class="mobile-header-icons">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                 <div class="dropdown" id="user-menu-mobile">
+                    <button class="icon-btn" id="user-menu-btn-mobile" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-mobile" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-mobile">0</span>
+                </a>
+            </div>
+        </div>
+         <nav class="mobile-nav" id="mobile-nav" style="display: none;"> </nav>
+    </header>
+
+    <main class="form-page">
+        <div class="form-container">
+            <h2>Create Account</h2>
+            <form action="#"> <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="nic">NIC</label>
+                    <input type="text" id="nic" name="nic" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                 <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            <div class="form-footer">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-column"> <h4>Menu</h4> <ul><li><a href="craken.html">Home</a></li><li><a href="all-products.html">Shop All</a></li><li><a href="craken-originals.html">Craken Originals</a></li><li><a href="category.html?name=Deals">Deals</a></li></ul> </div>
+            <div class="footer-column"> <h4>Support</h4> <ul><li><a href="#">FAQ</a></li><li><a href="#">Delivery</a></li><li><a href="#">Make A Return</a></li><li><a href="#">Orders</a></li><li><a href="#">Returns</a></li><li><a href="#">Submit A Request</a></li><li><a href="#">Careers</a></li></ul> </div>
+            <div class="footer-column"> <h4>My Account</h4> <ul><li><a href="login.html">Login</a></li><li><a href="signup.html">Register</a></li></ul> </div>
+            <div class="footer-column"> <h4>Stay Connected</h4> <div class="footer-signup"> <p>Be the first to know about new drops & offers.</p> <form action="#" class="signup-form"> <input type="email" placeholder="Enter your email address" required> <button type="submit">SIGN UP</button> </form> </div> </div>
+        </div>
+        <div class="footer-bottom">
+             <div class="container">
+                <div class="footer-payment-social">
+                    <div class="footer-payment-icons"> <i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i> </div>
+                    <div class="footer-social-icons"> <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a> <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a> <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a> </div>
+                </div>
+                <div class="footer-links-bottom"> <a href="#">Contact Information</a> <a href="#">Refund Policy</a> <a href="#">Shipping Policy</a> <a href="#">Terms of Service</a> </div>
+                 <p class="footer-brand-info">Craken - A Sri Lankan Brand</p>
+                 <p class="copyright">&copy; 2025 Craken. All Rights Reserved.</p>
+             </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- Global JS ---
+        function updateCartBadges() {
+             let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+             let totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+             localStorage.setItem('cartCount', totalQuantity.toString());
+             const cartCount = totalQuantity.toString();
+             const badges = document.querySelectorAll('.cart-badge');
+             badges.forEach(badge => {
+                 if (cartCount !== '0' && parseInt(cartCount) > 0) {
+                     badge.innerText = cartCount;
+                     badge.style.display = 'flex';
+                 } else {
+                     badge.style.display = 'none';
+                 }
+             });
+        }
+        function setupUserMenu(btnId) {
+            const userMenuBtn = document.getElementById(btnId);
+            const userMenu = userMenuBtn?.nextElementSibling;
+            if (!userMenuBtn || !userMenu) return;
+            userMenuBtn.addEventListener('click', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                document.querySelectorAll('.user-menu-dropdown.show').forEach(m => {
+                    if (m !== userMenu) m.classList.remove('show');
+                });
+                userMenu.classList.toggle('show');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadges();
+            setupUserMenu('user-menu-btn-desktop');
+            setupUserMenu('user-menu-btn-mobile');
+            // No mobile nav toggle needed here
+        });
+
+        // Close dropdown when clicking anywhere else
+        window.addEventListener('click', function(e) {
+             if (!e.target.closest('.dropdown')) {
+                 document.querySelectorAll('.user-menu-dropdown.show').forEach(menu => {
+                     menu.classList.remove('show');
+                 });
+             }
+        });
+    </script>
+</body>
+</html>

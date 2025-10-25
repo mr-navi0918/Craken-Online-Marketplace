@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Wrist Watch - Craken</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- Global Resets and Theme --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #f0f0f0; line-height: 1.6; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3, h4 { color: #ffffff; line-height: 1.2; margin-bottom: 10px; }
+        a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+        img { max-width: 100%; display: block; }
+        ul { list-style: none; }
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-size: 0.95rem; text-align: center; transition: all 0.3s ease; cursor: pointer;}
+        .btn-primary { background-color: #ffffff; color: #000000; border: 1px solid #ffffff; }
+        .btn-primary:hover { background-color: #cccccc; border-color: #cccccc; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; }
+        .btn-secondary:hover { background-color: #ffffff; color: #000000; }
+        .btn-large { padding: 14px 28px; font-size: 1.05rem; }
+
+        /* --- Header & Navigation --- */
+        header { background-color: #000000; padding: 1rem 0; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2.2rem; font-weight: 800; color: #ffffff; flex-shrink: 0; margin-right: 0; }
+        .main-nav { margin: 0 auto; flex-grow: 1; display: flex; justify-content: center; }
+        .main-nav ul { display: flex; }
+
+        /* --- Header Icons & User Menu --- */
+        .header-actions { display: flex; align-items: center; gap: 15px; margin-left: 0; flex-shrink: 0; }
+        .mobile-header-icons { display: flex; align-items: center; gap: 15px; }
+        .icon-btn { position: relative; font-size: 1.3rem; color: #ffffff; background: none; border: none; cursor: pointer; padding: 5px; }
+        .icon-btn:hover { color: #cccccc; }
+        .cart-badge { display: none; position: absolute; top: -5px; right: -8px; background-color: #ffffff; color: #000000; border-radius: 50%; width: 18px; height: 18px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .dropdown { position: relative; }
+        .user-menu-dropdown { display: none; position: absolute; right: 0; top: calc(100% + 10px); background-color: #000; border: 1px solid #333; border-radius: 8px; min-width: 160px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 101; opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+        .user-menu-dropdown.show { display: block; opacity: 1; transform: translateY(0); }
+        .user-menu-dropdown a { display: block; padding: 10px 15px; color: #f0f0f0; font-weight: 500; font-size: 0.95rem; }
+        .user-menu-dropdown a:hover { background-color: #222; }
+        .user-menu-dropdown a:first-child { border-radius: 8px 8px 0 0; }
+        .user-menu-dropdown a:last-child { border-radius: 0 0 8px 8px; }
+        .main-nav li.dropdown { position: relative; display: inline-block; }
+        .main-nav .nav-link { font-weight: 600; padding: 15px 18px; display: block; color: #f0f0f0; font-size: 0.95rem; }
+        .main-nav .nav-link:hover { color: #ffffff; }
+        /* Mega menu hidden on product page */
+        .mega-menu { display: none !important; }
+
+        /* --- Mobile Navigation --- */
+        .mobile-nav-toggle { display: none; font-size: 1.6rem; color: #ffffff; background: none; border: none; cursor: pointer; padding: 5px; }
+        .mobile-header-icons { display: none; }
+        .mobile-nav { display: none; width: 100%; max-height: calc(100vh - 70px); overflow-y: auto; background-color: #000; border-top: 1px solid #333; position: absolute; top: 100%; left: 0; z-index: 99; transition: transform 0.3s ease-out; transform: translateY(-100%); }
+        .mobile-nav.mobile-nav-open { display: block; transform: translateY(0); }
+        .mobile-nav-section { padding: 0.5rem 5%; border-bottom: 1px solid #333; }
+        .mobile-nav-section:last-child { border-bottom: none; }
+        .mobile-nav a, .mobile-nav summary { display: block; color: #f0f0f0; padding: 10px 0; font-weight: 600; font-size: 1rem; }
+        .mobile-nav a:hover, .mobile-nav summary:hover { color: #ffffff; }
+        .mobile-nav details { width: 100%; }
+        .mobile-nav summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .mobile-nav summary::after { content: '\f067'; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.9em; }
+        .mobile-nav details[open] summary::after { content: '\f068'; }
+        .mobile-nav .submenu { padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .mobile-nav .submenu a { font-size: 0.95rem; font-weight: 400; padding: 6px 0; color: #ccc; }
+        .mobile-nav .submenu a:hover { color: #fff; }
+
+        /* --- Media Query --- */
+        @media (max-width: 1050px) {
+             .main-nav { display: none; }
+             .header-actions { display: none; }
+             .mobile-nav-toggle { display: block; order: 1; margin-right: 10px; }
+             .mobile-header-icons { display: flex; order: 3; margin-left: auto; gap: 10px; }
+             .logo { order: 2; margin-right: auto; font-size: 1.8rem; }
+        }
+         @media (max-width: 480px) {
+            .logo { font-size: 1.6rem; }
+            .icon-btn { font-size: 1.2rem; }
+            .cart-badge { width: 16px; height: 16px; font-size: 0.7rem; top: -4px; right: -6px;}
+            .product-actions .btn { width: 100%; } /* Stack buttons */
+            .product-actions .form-group { width: 100%; margin-bottom: 10px; margin-right: 0; }
+        }
+
+        /* --- Page Styles --- */
+        .breadcrumbs { padding: 1.5rem 0; font-size: 0.9rem; color: #aaa; }
+        .breadcrumbs a { color: #aaa; }
+        .breadcrumbs a:hover { color: #fff; }
+        .product-detail-layout { display: flex; flex-wrap: wrap; gap: 2rem; padding: 2rem 0; }
+        .product-image-gallery { flex: 1 1 400px; min-width: 300px; }
+        .product-image-gallery img { border-radius: 8px; border: 1px solid #333; background-color: #555; }
+        .product-details { flex: 1 1 400px; min-width: 300px; }
+        .product-details h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .product-details .price { font-size: 1.8rem; font-weight: bold; color: #fff; margin: 0.8rem 0; }
+        .product-details p.description { font-size: 1rem; color: #ccc; margin-bottom: 1.5rem; }
+        .product-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 1.5rem; }
+        .product-actions .form-group { margin-bottom: 0; margin-right: 10px; }
+        .product-actions label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        .product-actions input[type="number"] { padding: 8px 10px; width: 70px; background-color: #333; border: 1px solid #555; color: #fff; border-radius: 5px; font-size: 1rem; }
+        .product-actions .btn { padding: 10px 20px; font-size: 0.95rem; }
+        .btn-large { padding: 14px 28px; font-size: 1.05rem; }
+        .product-actions .btn-secondary i { margin-right: 6px; }
+
+        /* --- Footer --- */
+        footer { background-color: #0a0a0a; color: #888; padding: 3rem 0 2rem 0; text-align: center; margin-top: 4rem; border-top: 1px solid #222; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; text-align: left; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 5%;}
+        .footer-column h4 { color: #ffffff; font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-column ul li { margin-bottom: 0.6rem; }
+        .footer-column ul li a { color: #aaa; font-size: 0.9rem; transition: color 0.2s ease; }
+        .footer-column ul li a:hover { color: #ffffff; }
+        .footer-signup { margin-top: 10px; }
+        .footer-signup p { font-size: 0.9rem; color: #aaa; margin-bottom: 0.8rem; }
+        .signup-form { display: flex; }
+        .signup-form input[type="email"] { flex-grow: 1; padding: 10px 12px; border: 1px solid #333; background-color: #1f1f1f; color: #fff; border-radius: 5px 0 0 5px; font-size: 0.9rem; }
+        .signup-form input[type="email"]:focus { outline: none; border-color: #555; }
+        .signup-form button { padding: 10px 15px; background-color: #ffffff; color: #000000; border: 1px solid #ffffff; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background-color 0.2s ease; }
+        .signup-form button:hover { background-color: #cccccc; border-color: #cccccc; }
+        .footer-bottom { border-top: 1px solid #222; padding-top: 1.5rem; text-align: center; }
+        .footer-bottom .container { display: flex; flex-direction: column; align-items: center; gap: 1rem;}
+        .footer-payment-social { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem; }
+        .footer-payment-icons { display: flex; gap: 10px; font-size: 1.8rem; color: #555; }
+        .footer-social-icons { display: flex; gap: 15px; font-size: 1.3rem; }
+        .footer-social-icons a { color: #888; transition: color 0.2s ease; }
+        .footer-social-icons a:hover { color: #ffffff; }
+        .footer-brand-info { margin-top: 1rem; font-style: italic; color: #aaa; font-size: 0.9rem;}
+        .copyright { font-size: 0.85rem; color: #666; margin-top: 1rem;}
+        .footer-links-bottom { margin-top: 1rem; }
+        .footer-links-bottom a { color: #aaa; margin: 0 8px; font-weight: 500; font-size: 0.85rem; }
+        .footer-links-bottom a:hover { color: #ffffff; }
+
+        @media (max-width: 768px) {
+            .footer-container { grid-template-columns: repeat(2, 1fr); }
+            .footer-payment-social { flex-direction: column; gap: 1.5rem; }
+        }
+         @media (max-width: 480px) {
+            .footer-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+         <div class="container">
+            <button class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+            <a href="craken.html" class="logo">Craken</a>
+
+            <nav class="main-nav">
+                 <ul>
+                     <li><a href="category.html?name=Home+%26+Garden" class="nav-link">Home & Garden</a></li>
+                     <li><a href="category.html?name=Fashion" class="nav-link">Fashion</a></li>
+                     <li><a href="category.html?name=Health+%26+Beauty" class="nav-link">Health & Beauty</a></li>
+                     <li><a href="category.html?name=Grocery" class="nav-link">Grocery</a></li>
+                 </ul>
+            </nav>
+
+            <div class="header-actions">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                <div class="dropdown" id="user-menu-desktop">
+                    <button class="icon-btn" id="user-menu-btn-desktop" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-desktop" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-desktop">0</span>
+                </a>
+            </div>
+
+            <div class="mobile-header-icons">
+                 <a href="craken-originals.html" class="icon-btn" title="Craken Originals" aria-label="Craken Originals"><i class="fa-solid fa-gem"></i></a>
+                 <div class="dropdown" id="user-menu-mobile">
+                    <button class="icon-btn" id="user-menu-btn-mobile" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+                    <div class="user-menu-dropdown">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="icon-btn" id="cart-btn-mobile" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-mobile">0</span>
+                </a>
+            </div>
+        </div>
+
+        <nav class="mobile-nav" id="mobile-nav">
+             <div class="mobile-nav-section"> <ul> </ul> </div>
+             <div class="mobile-nav-section"> <ul> </ul> </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="breadcrumbs">
+                <a href="craken.html">Home</a> &gt; <a href="category.html?name=Fashion">Fashion</a> &gt; <a href="category.html?name=Watches">Watches</a> &gt; Minimalist Wrist Watch
+            </div>
+            <section class="product-detail-layout"
+                      data-product-id="watch001"
+                      data-product-name="Minimalist Wrist Watch"
+                      data-product-price="8500"
+                      data-product-image="https://via.placeholder.com/600x600/CCCCCC/000000?text=Product+Image">
+                <div class="product-image-gallery">
+                    <img src="https://via.placeholder.com/600x600/CCCCCC/000000?text=Product+Image" alt="Minimalist Wrist Watch">
+                </div>
+                <div class="product-details">
+                    <h2>Minimalist Wrist Watch</h2>
+                    <p class="price">Rs 8,500</p>
+                    <p class="description">
+                        A sleek, modern timepiece designed for the minimalist.
+                        Features a stainless steel case, a genuine leather strap,
+                        and a scratch-resistant sapphire crystal face. Water-resistant up to 50m.
+                    </p>
+                    <div class="product-actions">
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1">
+                        </div>
+                        <button class="btn btn-primary btn-large" id="add-to-cart-btn">Add to Cart</button>
+                        <button class="btn btn-secondary btn-large" id="buy-now-btn">Buy Now</button>
+
+                        <button class="btn btn-secondary" id="add-to-wishlist-btn">
+                            <i class="fa-regular fa-heart"></i>Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-column"> <h4>Menu</h4> <ul><li><a href="craken.html">Home</a></li><li><a href="all-products.html">Shop All</a></li><li><a href="craken-originals.html">Craken Originals</a></li><li><a href="category.html?name=Deals">Deals</a></li></ul> </div>
+            <div class="footer-column"> <h4>Support</h4> <ul><li><a href="#">FAQ</a></li><li><a href="#">Delivery</a></li><li><a href="#">Make A Return</a></li><li><a href="#">Orders</a></li><li><a href="#">Returns</a></li><li><a href="#">Submit A Request</a></li><li><a href="#">Careers</a></li></ul> </div>
+            <div class="footer-column"> <h4>My Account</h4> <ul><li><a href="login.html">Login</a></li><li><a href="signup.html">Register</a></li></ul> </div>
+            <div class="footer-column"> <h4>Stay Connected</h4> <div class="footer-signup"> <p>Be the first to know about new drops & offers.</p> <form action="#" class="signup-form"> <input type="email" placeholder="Enter your email address" required> <button type="submit">SIGN UP</button> </form> </div> </div>
+        </div>
+        <div class="footer-bottom">
+             <div class="container">
+                <div class="footer-payment-social">
+                    <div class="footer-payment-icons"> <i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i> </div>
+                    <div class="footer-social-icons"> <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a> <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a> <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a> </div>
+                </div>
+                <div class="footer-links-bottom"> <a href="#">Contact Information</a> <a href="#">Refund Policy</a> <a href="#">Shipping Policy</a> <a href="#">Terms of Service</a> </div>
+                 <p class="footer-brand-info">Craken - A Sri Lankan Brand</p>
+                 <p class="copyright">&copy; 2025 Craken. All Rights Reserved.</p>
+             </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- Global JS ---
+        function updateCartBadges() {
+             let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+             let totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+             localStorage.setItem('cartCount', totalQuantity.toString());
+             const cartCount = totalQuantity.toString();
+             const badges = document.querySelectorAll('.cart-badge');
+             badges.forEach(badge => {
+                 if (cartCount !== '0' && parseInt(cartCount) > 0) {
+                     badge.innerText = cartCount;
+                     badge.style.display = 'flex';
+                 } else {
+                     badge.style.display = 'none';
+                 }
+             });
+        }
+        function setupUserMenu(btnId) {
+             const userMenuBtn = document.getElementById(btnId);
+             const userMenu = userMenuBtn?.nextElementSibling;
+             if (!userMenuBtn || !userMenu) return;
+             userMenuBtn.addEventListener('click', function(e) {
+                 e.preventDefault(); e.stopPropagation();
+                 document.querySelectorAll('.user-menu-dropdown.show').forEach(m => {
+                    if (m !== userMenu) m.classList.remove('show');
+                 });
+                 userMenu.classList.toggle('show');
+             });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadges();
+            setupUserMenu('user-menu-btn-desktop');
+            setupUserMenu('user-menu-btn-mobile');
+
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+             if (mobileMenuBtn && mobileNav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileNav.classList.toggle('mobile-nav-open');
+                });
+            }
+
+            const wishlistBtnMobile = document.getElementById('wishlist-btn-mobile');
+             if (wishlistBtnMobile) {
+                wishlistBtnMobile.addEventListener('click', function(e) {
+                    e.preventDefault(); alert('Opening wishlist... (This is a demo)');
+                });
+             }
+
+            // --- Page-Specific JS (Product Detail) ---
+
+            const cartBtn = document.getElementById('add-to-cart-btn');
+            if (cartBtn) {
+                cartBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productElement = document.querySelector('.product-detail-layout');
+                    const quantityInput = document.getElementById('quantity');
+                    const quantityToAdd = parseInt(quantityInput.value) || 1;
+
+                    // Get product details from data attributes
+                    const productId = productElement.dataset.productId;
+                    const productName = productElement.dataset.productName;
+                    const productPrice = parseFloat(productElement.dataset.productPrice);
+                    const productImage = productElement.dataset.productImage;
+
+                    if (!productId || !productName || isNaN(productPrice)) {
+                        alert('Error: Could not get product details.');
+                        return;
+                    }
+
+                    // Get existing cart or create new one
+                    let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+                    const existingItemIndex = cartItems.findIndex(item => item.id === productId);
+
+                    if (existingItemIndex > -1) {
+                        cartItems[existingItemIndex].quantity += quantityToAdd;
+                    } else {
+                        cartItems.push({
+                            id: productId,
+                            name: productName,
+                            price: productPrice,
+                            quantity: quantityToAdd,
+                            image: productImage
+                        });
+                    }
+
+                    localStorage.setItem('crakenCart', JSON.stringify(cartItems));
+                    alert('Added ' + quantityToAdd + ' x "' + productName + '" to your cart!');
+                    updateCartBadges();
+                });
+            }
+
+            const wishlistBtn = document.getElementById('add-to-wishlist-btn');
+             if (wishlistBtn) {
+                wishlistBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Added "Minimalist Wrist Watch" to your wishlist! (This is a demo)');
+                });
+            }
+
+            const buyNowBtn = document.getElementById('buy-now-btn');
+             if(buyNowBtn) {
+                buyNowBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                     const productElement = document.querySelector('.product-detail-layout');
+                     const quantityInput = document.getElementById('quantity');
+                     const quantityToAdd = parseInt(quantityInput.value) || 1;
+                     const productId = productElement.dataset.productId;
+                     const productName = productElement.dataset.productName;
+                     const productPrice = parseFloat(productElement.dataset.productPrice);
+                     const productImage = productElement.dataset.productImage;
+
+                     if (!productId || !productName || isNaN(productPrice)) {
+                        alert('Error: Could not get product details for Buy Now.');
+                        return;
+                     }
+
+                     let cartItems = JSON.parse(localStorage.getItem('crakenCart')) || [];
+                     const existingItemIndex = cartItems.findIndex(item => item.id === productId);
+
+                     if (existingItemIndex > -1) {
+                         cartItems[existingItemIndex].quantity += quantityToAdd;
+                     } else {
+                         cartItems.push({ id: productId, name: productName, price: productPrice, quantity: quantityToAdd, image: productImage });
+                     }
+                     localStorage.setItem('crakenCart', JSON.stringify(cartItems));
+                     updateCartBadges();
+                    window.location.href = 'cart.html'; // Redirect to cart page
+                });
+            }
+        });
+
+        // Close dropdown when clicking anywhere else
+        window.addEventListener('click', function(e) {
+             if (!e.target.closest('.dropdown')) {
+                 document.querySelectorAll('.user-menu-dropdown.show').forEach(menu => {
+                     menu.classList.remove('show');
+                 });
+             }
+        });
+    </script>
+</body>
+</html>
